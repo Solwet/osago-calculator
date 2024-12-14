@@ -4,3 +4,4 @@ pydantic
 sqlalchemy
 python-dotenv
 requests
+fastapi[all]

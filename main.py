@@ -1,8 +1,20 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import math
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Настройки CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Разрешает запросы с любого источника
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешает все методы (GET, POST, OPTIONS и т.д.)
+    allow_headers=["*"],  # Разрешает любые заголовки
+)
+
 
 # Определение коэффициентов для расчета ОСАГО
 BASE_RATE = 5005  # Базовая ставка в рублях
