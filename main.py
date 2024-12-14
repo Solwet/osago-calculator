@@ -5,7 +5,7 @@ import math
 app = FastAPI()
 
 # Определение коэффициентов для расчета ОСАГО
-BASE_RATE = 5000  # Базовая ставка в рублях
+BASE_RATE = 5005  # Базовая ставка в рублях
 
 class InsuranceData(BaseModel):
     age: int  # Возраст водителя
