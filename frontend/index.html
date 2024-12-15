@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSAGO Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, select, button {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #000000;
+        }
+        .result {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 15px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OSAGO Calculator</h1>
+        <form id="osagoForm">
+            <label for="age">Driver's Age:</label>
+            <input type="number" id="age" name="age" required>
+
+            <label for="experience">Driving Experience (years):</label>
+            <input type="number" id="experience" name="experience" required>
+
+            <label for="power">Car Power (hp):</label>
+            <input type="number" id="power" name="power" required>
+
+            <label for="region_factor">Region Factor:</label>
+            <select id="region_factor" name="region_factor" required>
+                <option value="1.0">1.0</option>
+                <option value="1.2">1.2</option>
+                <option value="1.5">1.5</option>
+            </select>
+
+            <label for="accident_history">Accident History:</label>
+            <input type="number" id="accident_history" name="accident_history" required>
+
+            <button type="submit">Calculate</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('osagoForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Предотвращаем перезагрузку страницы
+
+            // Считываем данные формы
+            const formData = new FormData(form);
+            const data = {
+                age: parseInt(formData.get('age')),
+                experience: parseInt(formData.get('experience')),
+                power: parseInt(formData.get('power')),
+                region_factor: parseFloat(formData.get('region_factor')),
+                accident_history: parseInt(formData.get('accident_history')),
+            };
+
+            try {
+                // Отправляем запрос к API
+                const response = await fetch('http://127.0.0.1:8000/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+
+                // Получаем результат
+                const result = await response.json();
+                resultDiv.textContent = `OSAGO Cost: ${result.osago_cost} RUB`;
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
