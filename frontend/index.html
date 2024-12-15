@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSAGO Calculator</title>
+    <title>Калькулятор ОСАГО</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,7 +48,7 @@
             cursor: pointer;
         }
         button:hover {
-            background-color: #000000;
+            background-color: #0056b3;
         }
         .result {
             text-align: center;
@@ -60,28 +60,28 @@
 </head>
 <body>
     <div class="container">
-        <h1>OSAGO Calculator</h1>
+        <h1>Калькулятор ОСАГО</h1>
         <form id="osagoForm">
-            <label for="age">Driver's Age:</label>
-            <input type="number" id="age" name="age" required>
+            <label for="birth_date">Дата рождения:</label>
+            <input type="date" id="birth_date" name="birth_date" required>
 
-            <label for="experience">Driving Experience (years):</label>
-            <input type="number" id="experience" name="experience" required>
+            <label for="license_date">Дата получения прав:</label>
+            <input type="date" id="license_date" name="license_date" required>
 
-            <label for="power">Car Power (hp):</label>
+            <label for="power">Мощность автомобиля (л.с.):</label>
             <input type="number" id="power" name="power" required>
 
-            <label for="region_factor">Region Factor:</label>
+            <label for="region_factor">Региональный коэффициент:</label>
             <select id="region_factor" name="region_factor" required>
                 <option value="1.0">1.0</option>
                 <option value="1.2">1.2</option>
                 <option value="1.5">1.5</option>
             </select>
 
-            <label for="accident_history">Accident History:</label>
+            <label for="accident_history">Количество аварий:</label>
             <input type="number" id="accident_history" name="accident_history" required>
 
-            <button type="submit">Calculate</button>
+            <button type="submit">Рассчитать</button>
         </form>
         <div class="result" id="result"></div>
     </div>
@@ -91,20 +91,18 @@
         const resultDiv = document.getElementById('result');
 
         form.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Предотвращаем перезагрузку страницы
+            event.preventDefault();
 
-            // Считываем данные формы
             const formData = new FormData(form);
             const data = {
-                age: parseInt(formData.get('age')),
-                experience: parseInt(formData.get('experience')),
+                birth_date: formData.get('birth_date'),
+                license_date: formData.get('license_date'),
                 power: parseInt(formData.get('power')),
                 region_factor: parseFloat(formData.get('region_factor')),
                 accident_history: parseInt(formData.get('accident_history')),
             };
 
             try {
-                // Отправляем запрос к API
                 const response = await fetch('http://127.0.0.1:8000/calculate', {
                     method: 'POST',
                     headers: {
@@ -114,14 +112,13 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
+                    throw new Error(`Ошибка: ${response.statusText}`);
                 }
 
-                // Получаем результат
                 const result = await response.json();
-                resultDiv.textContent = `OSAGO Cost: ${result.osago_cost} RUB`;
+                resultDiv.textContent = `Стоимость ОСАГО: ${result.osago_cost} руб.`;
             } catch (error) {
-                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.textContent = `Ошибка: ${error.message}`;
             }
         });
     </script>
