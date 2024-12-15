@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор ОСАГО</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes moveCar {
+            0% {
+                left: -150px;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('/static/images/background1.jpg');
+            background-size: cover;
+            background-position: center;
+            animation: fadeIn 1.5s ease-in-out;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5300d6;
+            margin-bottom: 20px;
+            position: relative;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h1:after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: #5300d6;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin: 10px 0 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #5300d6;
+            box-shadow: 0 0 5px rgba(83, 0, 214, 0.5);
+        }
+
+        button {
+            background-color: #5300d6;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        button:hover {
+            background-color: #3d00b2;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 15px;
+            color: #5300d6;
+        }
+
+        .developers, .contacts {
+            text-align: left;
+            margin-top: 20px;
+            position: absolute;
+            animation: slideIn 2s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #5300d6;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .developers h2, .contacts h2 {
+            color: #5300d6;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .developers p, .contacts p {
+            font-size: 1.2em;
+            color: #333;
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 120px;
+            height: auto;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+        }
+
+        .car {
+            position: absolute;
+            bottom: 0;
+            left: -150px; /* Начальная позиция */
+            width: 100px;
+            height: auto;
+            animation: moveCar 3s linear infinite;
+            animation-play-state: paused; /* Изначально анимация остановлена */
+        }
+
+        .loading {
+            color: #5300d6;
+            font-size: 1.2em;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Стиль для копирайта */
+        .copyright {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 1em;
+            color: #5300d6;
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Логотип теперь кликабельный -->
+    <a href="https://uust.ru/" target="_blank">
+        <img src="/static/images/university_logo.png" alt="Логотип университета" class="logo">
+    </a>
+
+    <!-- Анимация с машиной -->
+    <img src="/static/images/car.png" alt="Машина" class="car" id="car">
+
+    <div class="container">
+        <h1><span class="icon">🚗</span>Калькулятор ОСАГО</h1>
+        <form id="osagoForm">
+            <label for="birth_date">Дата рождения:</label>
+            <input type="date" id="birth_date" name="birth_date" required>
+
+            <label for="license_date">Дата получения прав:</label>
+            <input type="date" id="license_date" name="license_date" required>
+
+            <label for="power">Мощность автомобиля (л.с.):</label>
+            <input type="number" id="power" name="power" required>
+
+            <label for="region_factor">Региональный коэффициент:</label>
+            <select id="region_factor" name="region_factor" required>
+                <option value="1.0">1.0</option>
+                <option value="1.2">1.2</option>
+                <option value="1.5">1.5</option>
+            </select>
+
+            <label for="accident_history">Количество аварий:</label>
+            <input type="number" id="accident_history" name="accident_history" required>
+
+            <button type="submit">Рассчитать</button>
+        </form>
+        <div class="loading" id="loading">Рассчитываем, подождите...</div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <!-- Блок с контактами слева -->
+    <div class="contacts" style="left: 20px;">
+        <h2>Контакты:</h2>
+        <p>Пестерев А.Е.</p>
+        <p>Телефон: +7 (987) 250-31-64</p>
+        <p>Email: pesterev.pae@yandex.ru</p>
+       
+        <br>
+        <p>Пересыпкин Д.В.</p>
+        <p>Телефон: +7 (987) 102-14-00</p>
+        <p>Email: peresypkin.dovid@gmail.com</p>
+        
+        <br>
+        <p>Мухтаров Р.А.</p>
+        <p>Телефон: +7 (917) 456-93-36</p>
+        <p>Email: RuslanJohn@gmail.com</p>
+    </div>
+
+    <!-- Раздел для имён разработчиков -->
+    <div class="developers" style="right: 20px;">
+        <h2>Разработчики:</h2>
+        <p>Мухтаров Руслан Айдынович (Back-end разработчик)</p>
+        <p>Пересыпкин Давид Валерьевич (Front-end разработчик)</p>
+        <p>Пестерев Андрей Евгеньевич (Дизайнер интерфейса)</p>
+    </div>
+
+    <!-- Копирайт -->
+    <div class="copyright">
+        <p>&copy; 2024 Все права защищены</p>
+    </div>
+
+    <script>
+        const form = document.getElementById('osagoForm');
+        const resultDiv = document.getElementById('result');
+        const loadingDiv = document.getElementById('loading');
+        const car = document.getElementById('car');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Запуск анимации машины
+            car.style.animationPlayState = 'running';
+
+            const formData = new FormData(form);
+            const data = {
+                birth_date: formData.get('birth_date'),
+                license_date: formData.get('license_date'),
+                power: parseInt(formData.get('power')),
+                region_factor: parseFloat(formData.get('region_factor')),
+                accident_history: parseInt(formData.get('accident_history')),
+            };
+
+            // Показываем сообщение о загрузке
+            loadingDiv.style.display = 'block'; // Показать индикатор загрузки
+
+            try {
+                // Имитируем задержку для анимации
+                await new Promise(resolve => setTimeout(resolve, 3000)); // 3 секунды задержки
+
+                const response = await fetch('http://127.0.0.1:8000/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Ошибка сервера');
+                }
+
+                const result = await response.json();
+                resultDiv.textContent = `Стоимость ОСАГО: ${result.osago_cost} руб.`;
+
+                // Скрыть индикатор загрузки
+                loadingDiv.style.display = 'none';
+
+                // Остановка анимации машины после расчета
+                car.style.animationPlayState = 'paused';
+            } catch (error) {
+                resultDiv.textContent = `Ошибка: ${error.message}`;
+                loadingDiv.style.display = 'none'; // Скрыть индикатор загрузки при ошибке
+                car.style.animationPlayState = 'paused'; // Остановка анимации при ошибке
+            }
+        });
+    </script>
+</body>
+</html>
