@@ -11,7 +11,6 @@ import logging
 
 app = FastAPI()
 
-
 # Настройки CORS
 app.add_middleware(
     CORSMiddleware,
@@ -32,26 +31,31 @@ async def read_root():
     with open("frontend/index.html", "r", encoding="utf-8") as file:
         return HTMLResponse(content=file.read())
 
-
 # Определение коэффициентов для расчета ОСАГО
 BASE_RATE = 5005  # Базовая ставка в рублях
 
 class InsuranceData(BaseModel):
-    age: int  # Возраст водителя
-    experience: int  # Водительский стаж в годах
+    birth_date: str  # Дата рождения
+    license_date: str  # Дата получения прав
     power: int  # Мощность автомобиля в л.с.
     region_factor: float  # Региональный коэффициент
     accident_history: int  # Количество аварий за последние годы
-
 
 def calculate_osago(data: InsuranceData) -> float:
     """
     Логика расчёта стоимости ОСАГО.
     """
+    # Рассчитываем возраст и стаж
+    current_date = datetime.now()
+    birth_date = datetime.strptime(data.birth_date, "%Y-%m-%d")
+    license_date = datetime.strptime(data.license_date, "%Y-%m-%d")
+    age = (current_date - birth_date).days // 365
+    experience = (current_date - license_date).days // 365
+
     # Проверка вводных данных
-    if data.age < 18:
+    if age < 18:
         raise ValueError("Возраст должен быть 18 лет или больше.")
-    if data.experience < 0:
+    if experience < 0:
         raise ValueError("Стаж не может быть отрицательным.")
     if data.power <= 0:
         raise ValueError("Мощность автомобиля должна быть больше 0.")
@@ -67,11 +71,11 @@ def calculate_osago(data: InsuranceData) -> float:
         power_factor = 1.6
 
     # Коэффициент возраста и стажа
-    if data.age < 22 and data.experience < 3:
+    if age < 22 and experience < 3:
         age_experience_factor = 1.8
-    elif data.age < 22:
+    elif age < 22:
         age_experience_factor = 1.6
-    elif data.experience < 3:
+    elif experience < 3:
         age_experience_factor = 1.7
     else:
         age_experience_factor = 1.0
@@ -84,7 +88,6 @@ def calculate_osago(data: InsuranceData) -> float:
         BASE_RATE * power_factor * age_experience_factor * data.region_factor * accident_factor
     )
     return round(total_cost, 2)
-
 
 @app.post("/calculate")
 def calculate_insurance(data: InsuranceData):
