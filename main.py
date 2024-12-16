@@ -3,6 +3,13 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+<<<<<<< HEAD
+=======
+from datetime import datetime
+from pyngrok import ngrok  # Подключаем pyngrok
+from fastapi.logger import logger
+import logging
+>>>>>>> 52db5d396c464f8667d7e7958ebd78662948fc05
 
 
 app = FastAPI()
@@ -11,12 +18,14 @@ app = FastAPI()
 # Настройки CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Разрешает запросы с любого источника
+    allow_origins=["*"],  # Можно временно разрешить запросы со всех доменов
     allow_credentials=True,
-    allow_methods=["*"],  # Разрешает все методы (GET, POST, OPTIONS и т.д.)
-    allow_headers=["*"],  # Разрешает любые заголовки
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
+logging.basicConfig(level=logging.DEBUG)
+logger.debug("CORS middleware настроено правильно")
 # Подключаем папку frontend как источник статических файлов
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
@@ -90,4 +99,22 @@ def calculate_insurance(data: InsuranceData):
         return {"osago_cost": result}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+<<<<<<< HEAD
 
+=======
+    
+
+
+# Запуск ngrok при старте приложения
+@app.on_event("startup")
+async def startup_event():
+    # Открываем ngrok туннель на 8000 порту
+    public_url = ngrok.connect(8000)
+    print(f"ngrok tunnel opened at {public_url}")
+
+
+# Запуск ngrok при завершении приложения
+@app.on_event("shutdown")
+async def shutdown_event():
+    ngrok.disconnect_all()
+>>>>>>> 52db5d396c464f8667d7e7958ebd78662948fc05
