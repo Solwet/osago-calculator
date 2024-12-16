@@ -3,13 +3,10 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-<<<<<<< HEAD
-=======
 from datetime import datetime
 from pyngrok import ngrok  # Подключаем pyngrok
 from fastapi.logger import logger
 import logging
->>>>>>> 52db5d396c464f8667d7e7958ebd78662948fc05
 
 
 app = FastAPI()
@@ -99,9 +96,6 @@ def calculate_insurance(data: InsuranceData):
         return {"osago_cost": result}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-<<<<<<< HEAD
-
-=======
     
 
 
@@ -117,4 +111,3 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     ngrok.disconnect_all()
->>>>>>> 52db5d396c464f8667d7e7958ebd78662948fc05
